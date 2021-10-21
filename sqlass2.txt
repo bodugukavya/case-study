@@ -1,0 +1,134 @@
+1.	List the department without any employees in it.
+ANS) SELECT D.DNAME
+FROM DEPT D
+LEFT JOIN EMP E 
+ON D.DEPTNO = E.DEPTNO
+WHERE E.DEPTNO IS NULL
+
+2.	List the name and job of the employees who does not report to anybody.
+ANS) SELECT E.ENAME, E.JOB 
+	FROM EMP E INNER JOIN DEPT D 
+	ON E.DEPTNO = D.DEPTNO 
+	WHERE MGR IS NULL;
+
+3.	Write a query that will give you the names and jobs of all employees in New York with a commission above 1000
+ANS) SELECT E.ENAME, E.JOB, D.LOC, E.COMM 
+	FROM EMP E LEFT JOIN DEPT D 
+	ON E.DEPTNO = D.DEPTNO 
+	WHERE LOC LIKE'%NEW%' AND COMM>1000;
+
+4.	How many employees work in Chicago?
+ANS) SELECT count(*) AS 'TOTAL NO. OF EMPLOYEES', D.LOC
+	FROM EMP E inner JOIN DEPT D 
+	ON E.DEPTNO = D.DEPTNO 
+	WHERE LOC LIKE'%CHICA%'
+	GROUP BY D.LOC;
+
+5.	Which employees work in Chicago?
+ANS) SELECT E.ENAME, D.LOC
+	FROM EMP E LEFT JOIN DEPT D 
+	ON E.DEPTNO = D.DEPTNO 
+	WHERE LOC LIKE'%CHIC%';
+
+6.	List the employees’ names and cities in which they work. Order the list by city.
+ANS) SELECT E.ENAME, D.LOC
+	FROM EMP E JOIN DEPT D 
+	ON E.DEPTNO = D.DEPTNO 
+	ORDER BY D.LOC;
+
+7.	Find the number of employees and number of departments.
+ANS) 	SELECT COUNT(DISTINCT E.ENAME) AS 'TOTAL EMPLOYEES',
+	       COUNT(DISTINCT D.DEPTNO) AS 'TOTAL DEPARTMENTS'
+		   FROM EMP E, DEPT D;
+
+8.	Display the employees who were hired before their managers.
+ANS) 	SELECT E.ENAME, M.ENAME 'MANAGER', M.HIREDATE 'MANAGER HIREDATE', E.HIREDATE
+	FROM EMP E,EMP M
+	WHERE E.MGR = M.EMPNO AND E.HIREDATE<M.HIREDATE;
+	
+9.	Determine the number of managers without listing them.
+ANS)  SELECT COUNT(DISTINCT E.MGR)
+FROM EMP E , EMP W
+WHERE E.MGR = W.EMPNO;
+
+10.	Display the name and title of all employees who do not have a manager.
+ANS) SELECT DISTINCT E.ENAME,E.JOB
+FROM EMP E, EMP W
+WHERE E.MGR IS NULL;
+
+11.	Create a query to display the employee name and department number for employee SMITH.
+ANS)  SELECT ENAME, DEPTNO
+FROM EMP
+WHERE ENAME LIKE '%SMIT%'
+
+12.	Display the salesmen who are not in Boston
+ANS) SELECT E.ENAME,E.JOB, D.LOC
+FROM EMP E
+INNER JOIN DEPT D 
+ON E.DEPTNO = D.DEPTNO
+   WHERE E.JOB LIKE '%SALESM%' AND D.LOC LIKE '%BOST%';
+
+13.	List the details of the employees along with their location
+ANS) SELECT *
+     FROM EMP E
+     JOIN DEPT D
+ ON E.DEPTNO = D.DEPTNO; 
+
+14.	List the salesmen who are drawing salary less than Miller
+ANS) SELECT ENAME,JOB
+      FROM   EMP
+      WHERE JOB LIKE '%SALESM%' AND SAL <
+                                  (SELECT SAL
+                                   FROM   EMP
+                                    WHERE ENAME = 'MILLER');
+
+15.	Display the details of the employee working in Chicago
+ANS) SELECT *
+FROM EMP E
+JOIN DEPT D ON E.DEPTNO = D.DEPTNO
+WHERE D.LOC LIKE '%CHIC%';
+
+
+16.	Find the names of all employees whose salaries are greater than the minimum salary for the Manager
+ANS) SELECT * FROM EMP
+WHERE SAL > 
+       ANY(SELECT MIN(SAL)FROM EMP WHERE MGR=EMPNO GROUP BY EMPNO);
+
+17.	Select the last name and job id from all employees whose department id is equal to Accounting.
+ANS)  SELECT E.ENAME, E.JOB,D.DNAME, E.DEPTNO
+       FROM EMP E
+       LEFT JOIN DEPT D 
+       ON E.DEPTNO = D.DEPTNO
+   WHERE D.DNAME LIKE '%ACCOUN%';
+
+18.	Display those emp who are working as manager
+ANS) SELECT DISTINCT E.ENAME, M.MGR
+     FROM EMP E, EMP M
+  WHERE E.EMPNO = M.MGR;
+
+19.	write a subquery using case statement to display non sales if department is not sales
+ANS) Select DNAME,
+      CASE
+     WHEN DNAME = 'SALES' THEN 'SALES'
+     Else 'NON SALES'
+     END AS 'CHECK'
+      from DEPT
+20.	If salary of an employee is more than 1000, then display salary otherwise display 1000
+ANS)   Select SAL,
+      CASE
+     WHEN SAL > 1000 THEN SAL
+     Else 1000
+     END AS 'DEFAULT SALARY'
+      from EMP
+
+21.	Display salary as low, medium high based on salary range
+Less than 1000 less
+1000 to 2500 medium
+More than 2500 high
+ANS) Select SAL,
+      CASE
+     WHEN SAL < 1000 THEN 'LESS' 
+     WHEN SAL > 2500 THEN 'HIGH'
+	 ELSE 'MEDIUM'
+     END AS 'DESC'
+      from EMP
